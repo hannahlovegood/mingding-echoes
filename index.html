@@ -13,6 +13,10 @@
     --wine:#c0648c;             /* 欧陆 */
     --steel:#6fb6d6;            /* 分析 */
     --jade:#74c79a;             /* 东方 */
+    --violet:#a98fe0;           /* 中世纪 */
+    --turq:#3fc6bf;             /* 伊斯兰 */
+    --saffron:#e8924a;          /* 印度 */
+    --indigo:#7e8ce0;           /* 近代 */
     --blood:#8e1414;
     --serif: "Songti SC","STSong","Noto Serif SC","Source Han Serif SC","SimSun",serif;
     --serif-en: "Cormorant Garamond",Georgia,"Times New Roman",serif;
@@ -340,6 +344,10 @@
     <span><i style="background:var(--wine)"></i>欧陆</span>
     <span><i style="background:var(--steel)"></i>分析</span>
     <span><i style="background:var(--jade)"></i>东方</span>
+    <span><i style="background:var(--violet)"></i>中世纪</span>
+    <span><i style="background:var(--turq)"></i>伊斯兰</span>
+    <span><i style="background:var(--saffron)"></i>印度</span>
+    <span><i style="background:var(--indigo)"></i>近代</span>
   </div>
   <button class="btn" id="startBtn">开 始 招 魂</button>
   <div class="tip">建议佩戴耳机 · 含闪烁与惊吓元素 · 点击右上角可静音</div>
@@ -373,13 +381,19 @@ const THEMES = [
   {key:"命运", seal:"命", en:"FATE"},
   {key:"知",   seal:"知", en:"KNOWLEDGE"},
   {key:"苦难", seal:"苦", en:"SUFFERING"},
+  {key:"信仰", seal:"信", en:"FAITH"},
+  {key:"爱",   seal:"爱", en:"LOVE"},
 ];
 const THEME_MAP = Object.fromEntries(THEMES.map(t=>[t.key,t]));
 const SCHOOLS = {
-  "古典":{c:"var(--gold)",  en:"Classical"},
-  "欧陆":{c:"var(--wine)",  en:"Continental"},
-  "分析":{c:"var(--steel)", en:"Analytic"},
-  "东方":{c:"var(--jade)",  en:"Eastern"},
+  "古典":{c:"var(--gold)",    en:"Classical"},
+  "欧陆":{c:"var(--wine)",    en:"Continental"},
+  "分析":{c:"var(--steel)",   en:"Analytic"},
+  "东方":{c:"var(--jade)",    en:"Eastern"},
+  "中世纪":{c:"var(--violet)", en:"Medieval"},
+  "伊斯兰":{c:"var(--turq)",   en:"Islamic"},
+  "印度":{c:"var(--saffron)", en:"Indian"},
+  "近代":{c:"var(--indigo)",  en:"Modern"},
 };
 
 const Q = [
@@ -395,21 +409,21 @@ const Q = [
   ["普罗泰戈拉","人，是万物的尺度。","Man is the measure of all things.","古典","真实"],
   ["马可·奥勒留","宇宙是流变，人生是观念。","The universe is change; life is what our thoughts make it.","古典","时间"],
   ["塞内卡","我们恐惧死亡的时间，远比死亡本身漫长。","We fear death far longer than death itself lasts.","古典","死亡"],
-  ["奥古斯丁","时间究竟是什么？无人问我，我便知道；有人问起，我却茫然。","What then is time? If no one asks me, I know.","古典","时间"],
+  ["奥古斯丁","时间究竟是什么？无人问我，我便知道；有人问起，我却茫然。","What then is time? If no one asks me, I know.","中世纪","时间"],
   ["第欧根尼","请让开，别挡住我的阳光。","Stand a little out of my sun.","古典","自由"],
   // —— 欧陆 ——
-  ["笛卡尔","我思，故我在。","I think, therefore I am.","欧陆","存在"],
-  ["帕斯卡","这无限空间的永恒沉默，使我恐惧。","The eternal silence of these infinite spaces frightens me.","欧陆","虚无"],
-  ["斯宾诺莎","自由不是挣脱必然，而是认识必然。","Freedom is the recognition of necessity.","欧陆","命运"],
-  ["莱布尼茨","为什么是有，而不是一无所有？","Why is there something rather than nothing?","欧陆","存在"],
-  ["莱布尼茨","我们身处一切可能世界中最好的那一个。","We live in the best of all possible worlds.","欧陆","命运"],
+  ["笛卡尔","我思，故我在。","I think, therefore I am.","近代","存在"],
+  ["帕斯卡","这无限空间的永恒沉默，使我恐惧。","The eternal silence of these infinite spaces frightens me.","近代","虚无"],
+  ["斯宾诺莎","自由不是挣脱必然，而是认识必然。","Freedom is the recognition of necessity.","近代","命运"],
+  ["莱布尼茨","为什么是有，而不是一无所有？","Why is there something rather than nothing?","近代","存在"],
+  ["莱布尼茨","我们身处一切可能世界中最好的那一个。","We live in the best of all possible worlds.","近代","命运"],
   ["叔本华","人生像钟摆，在痛苦与无聊之间摇荡。","Life swings like a pendulum between pain and boredom.","欧陆","苦难"],
   ["叔本华","人能做他想做的，却不能要他所想要的。","A man can do what he wills, but cannot will what he wills.","欧陆","自由"],
   ["黑格尔","密涅瓦的猫头鹰，只在黄昏起飞。","The owl of Minerva spreads its wings only at dusk.","欧陆","时间"],
   ["克尔凯郭尔","焦虑，是自由的眩晕。","Anxiety is the dizziness of freedom.","欧陆","自由"],
   ["马克思","哲学家们只是用不同方式解释世界，而问题在于改变世界。","The point is not to interpret the world, but to change it.","欧陆","真实"],
   ["尼采","当你长久凝视深渊，深渊也在凝视你。","When you gaze long into an abyss, the abyss gazes also into you.","欧陆","虚无"],
-  ["尼采","上帝已死——而是我们杀死了他。","God is dead, and we have killed him.","欧陆","虚无"],
+  ["尼采","上帝已死——而是我们杀死了他。","God is dead, and we have killed him.","欧陆","信仰"],
   ["尼采","凡杀不死我的，使我更强大。","What does not kill me makes me stronger.","欧陆","苦难"],
   ["尼采","你是否愿意，把这一生再活一次，直到无数次？","Would you live this life again, and innumerable times more?","欧陆","命运"],
   ["海德格尔","向死而生。","Being-towards-death.","欧陆","死亡"],
@@ -441,6 +455,48 @@ const Q = [
   ["慧能","本来无一物，何处惹尘埃。","Originally there is not a single thing; where could dust alight?","东方","虚无"],
   ["庄子","吾生也有涯，而知也无涯。","Life has a limit, but knowledge has none.","东方","知"],
   ["释迦牟尼","人生皆苦。","All life is suffering.","东方","苦难"],
+  // —— 中世纪 ——
+  ["奥古斯丁","你为自己造了我们，我们的心便不得安宁，直到安息于你。","You made us for Yourself, and our heart is restless until it rests in You.","中世纪","信仰"],
+  ["奥古斯丁","爱，然后做你愿做的。","Love, and do what you will.","中世纪","爱"],
+  ["阿奎那","恩典不废除自然，而是成全自然。","Grace does not destroy nature but perfects it.","中世纪","信仰"],
+  ["安瑟伦","我信，所以我理解。","I believe so that I may understand.","中世纪","信仰"],
+  ["安瑟伦","上帝，是无法设想有比之更伟大者。","God is that than which nothing greater can be conceived.","中世纪","存在"],
+  ["波爱修斯","命运之轮，永远转动不息。","The wheel of Fortune turns ever round.","中世纪","命运"],
+  ["奥卡姆","如无必要，勿增实体。","Entities must not be multiplied beyond necessity.","中世纪","知"],
+  ["埃克哈特","万物之中，没有比沉默更像上帝的了。","Nothing in all creation is so like God as silence.","中世纪","语言"],
+  // —— 伊斯兰 ——
+  ["阿维森纳","必然存在者，因其自身而存在。","The Necessary Existent exists through itself.","伊斯兰","存在"],
+  ["阿维森纳","纵然悬空、毫无感官，灵魂仍知'我在'。","Even suspended in the void, the soul still knows that it is.","伊斯兰","存在"],
+  ["阿威罗伊","真理，不会与真理相矛盾。","Truth does not contradict truth.","伊斯兰","知"],
+  ["安萨里","怀疑，是通向真理的第一步。","Doubt is the first step toward truth.","伊斯兰","知"],
+  ["鲁米","伤口，是光照进你的地方。","The wound is the place where the light enters you.","伊斯兰","苦难"],
+  ["鲁米","你所寻找的，也在寻找着你。","What you seek is seeking you.","伊斯兰","爱"],
+  ["伊本·阿拉比","我的心，已能容纳一切形象。","My heart has become capable of every form.","伊斯兰","爱"],
+  // —— 印度 ——
+  ["《奥义书》","汝，即是彼。","Tat tvam asi — Thou art That.","印度","真实"],
+  ["商羯罗","梵真，世界幻；个我与梵，本来不二。","Brahman is real, the world illusion; the self is none other than Brahman.","印度","真实"],
+  ["龙树","一切因缘所生者，我说即是空。","Whatever is dependently arisen, that we call emptiness.","印度","虚无"],
+  ["龙树","轮回与涅槃之间，并无毫厘之别。","There is not the slightest difference between samsara and nirvana.","印度","虚无"],
+  ["《薄伽梵歌》","你只有行动的权利，却无权索取行动的果实。","You have a right to action alone, never to its fruits.","印度","命运"],
+  ["《薄伽梵歌》","灵魂不生亦不灭；刀不能砍，火不能焚。","The soul is never born nor dies; weapons cannot cleave it, nor fire burn it.","印度","死亡"],
+  ["帕坦伽利","瑜伽，是止息心识的种种波动。","Yoga is the stilling of the fluctuations of the mind.","印度","真实"],
+  // —— 近代 ——
+  ["康德","位我上者，灿烂星空；道德律令，在我心中。","The starry heavens above me, and the moral law within me.","近代","真实"],
+  ["康德","要只依你愿其成为普遍法则的准则行动。","Act only on that maxim you can will to become a universal law.","近代","自由"],
+  ["康德","人是目的，永远不可只当作手段。","Treat humanity always as an end, never merely as a means.","近代","自由"],
+  ["康德","启蒙，就是人摆脱自己加诸自己的不成熟。","Enlightenment is man's emergence from his self-imposed immaturity.","近代","知"],
+  ["休谟","理性，是且只应是激情的奴隶。","Reason is, and ought only to be, the slave of the passions.","近代","知"],
+  ["休谟","从'是'，推不出'应当'。","One cannot derive an 'ought' from an 'is'.","近代","知"],
+  ["洛克","人心初生，原是一块白板。","The mind is at first a blank slate, a tabula rasa.","近代","知"],
+  ["卢梭","人生而自由，却无往不在枷锁之中。","Man is born free, and everywhere he is in chains.","近代","自由"],
+  ["霍布斯","自然状态下，人的一生孤独、贫困、龌龊、野蛮而短暂。","In the state of nature, life is solitary, poor, nasty, brutish, and short.","近代","苦难"],
+  ["密尔","宁做不满足的苏格拉底，不做满足的蠢人。","Better to be Socrates dissatisfied than a fool satisfied.","近代","知"],
+  ["帕斯卡","人心自有其理由，为理性所不知。","The heart has its reasons, of which reason knows nothing.","近代","信仰"],
+  ["斯宾诺莎","对神的理智之爱，是心灵的至福。","The intellectual love of God is the mind's highest blessedness.","近代","爱"],
+  // —— 补充：古典之爱 / 欧陆之信仰 ——
+  ["柏拉图","爱，是对美与不朽的永恒渴望。","Love is the desire for the beautiful and the immortal.","古典","爱"],
+  ["亚里士多德","朋友，是住在两个身体里的同一个灵魂。","A friend is a single soul dwelling in two bodies.","古典","爱"],
+  ["克尔凯郭尔","信仰，恰恰始于思想终止之处。","Faith begins precisely where thinking leaves off.","欧陆","信仰"],
 ].map((a,i)=>({id:i, who:a[0], zh:a[1], en:a[2], school:a[3], theme:a[4]}));
 
 const POOL_BY_THEME = {};
