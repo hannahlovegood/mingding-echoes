@@ -512,14 +512,14 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const Audio = {
   ctx:null, master:null, drone:null, droneGain:null, muted:false, hbNext:0,
   init(){
-    if(this.ctx) return;
+    if(this.ctx){ if(this.ctx.state==="suspended") this.ctx.resume(); return; }
     try{
       const AC = window.AudioContext || window.webkitAudioContext;
       this.ctx = new AC();
       this.master = this.ctx.createGain();
       this.master.gain.value = 0.0001;
       this.master.connect(this.ctx.destination);
-      this.master.gain.exponentialRampToValueAtTime(0.9, this.ctx.currentTime+3);
+      if(!this.muted) this.master.gain.exponentialRampToValueAtTime(0.9, this.ctx.currentTime+3);
       this.startDrone();
     }catch(e){ /* 无音频也能玩 */ }
   },
@@ -611,7 +611,9 @@ const Audio = {
       o.connect(g); g.connect(this.master); o.start(now+off); o.stop(now+off+0.25); };
     beat(0); beat(0.22);
   },
-  setMuted(m){ this.muted=m; if(this.master) this.master.gain.value = m?0.0001:0.9; },
+  setMuted(m){ this.muted=m;
+    if(this.master){ this.master.gain.cancelScheduledValues(this.ctx.currentTime);
+      this.master.gain.value = m?0.0001:0.9; } },
 };
 
 /* ============================== 游戏状态 ============================== */
@@ -674,7 +676,7 @@ function moveCards(dt){
     c.y -= c.speed*spd*dt/1000;
     c.phase += dt/1000;
     c.x = c.baseX + Math.sin(c.phase*0.6)*10;
-    c.el.style.transform = `translate(${c.x-c.baseX}px, 0)`;
+    c.el.style.left = c.x+"px";
     c.el.style.top = c.y+"px";
     if(c.y < -160){
       // 命定箴言逃逸 → 失语，扣理智
@@ -843,7 +845,7 @@ function startGame(){
   Audio.init();
   $("#intro").classList.add("gone"); $("#over").classList.add("gone");
   S.running=true; S.sanity=100; S.score=0; S.combo=0; S.maxCombo=0;
-  S.diff=0; S.lastFrame=0; S.spawnAcc=0; S.themeAcc=0; S.horrorAcc=99999; // 第一波恐怖延后
+  S.diff=0; S.lastFrame=0; S.spawnAcc=0; S.themeAcc=0; S.horrorAcc=-99999; // 第一波恐怖延后
   S.gaze=false; S.gazeIdle=0; S.inscribed=[]; S.cards.forEach(c=>c.el.remove()); S.cards=[];
   S.startMs = Date.now();
   document.body.className="";
